@@ -13,6 +13,9 @@ const userData = document.getElementById('user_data'),
     payment = document.getElementById('payment'),
     activities = document.getElementById('activities'),
     checkboxes = document.querySelectorAll('input[type=checkbox'),
+    ccNum = document.getElementById('cc-num'),
+    ccZip = document.getElementById('zip'),
+    cvv = document.getElementById('cvv'),
 
     heartJsOptions = new Set(),
     jsPunsOptions = new Set(),
@@ -122,28 +125,52 @@ const userData = document.getElementById('user_data'),
 
             }
         },
-        activities: () => {
+        activities: (checkedBoxes, checkbox) => {
+            if (checkedBoxes.length > 1) {
+                const disable = (value) => {
+                    return value !== checkbox.name;
+                };
+                let checkboxToDisable = checkedBoxes.filter(disable);
+                let conflictingTime = document.getElementById(checkboxToDisable);
+
+                if (conflictingTime.hasAttribute('disabled')) {
+                    conflictingTime.removeAttribute('disabled');
+                    conflictingTime.parentNode.style.color = "#000";
+                } else {
+                    conflictingTime.setAttribute('disabled', 'disabled');
+                    conflictingTime.parentNode.style.color = "#bbb";
+                }
+            }
 
         }
     },
 
-    validateForm = () => {
-        nameField.addEventListener('blur', () => {
-            validate.name(nameField.value);
-        });
+    validateForm = () => {},
 
-        emailField.addEventListener('blur', () => {
-            validate.email(emailField.value);
-        });
-    };
+    total = createElement('label', 'total-label', 'total-label', 'Total: $'),
+    totalSpan = createElement('span', 'total', 'total', '0'),
+    otherInput = document.getElementById('other-title');
 
+let runningTotal = 0;
 
 sortColorOptions();
 displayPaymentInfo();
-validateForm();
 
-const otherInput = document.getElementById('other-title');
 otherInput.style.display = 'none';
+colorSelect.style.display = 'none';
+
+total.appendChild(totalSpan);
+activities.appendChild(total);
+
+nameField.focus();
+
+nameField.addEventListener('blur', () => {
+    validate.name(nameField.value);
+});
+
+emailField.addEventListener('blur', () => {
+    validate.email(emailField.value);
+});
 
 titleSelect.addEventListener('change', (e) => {
     const selectedValue = e.target.value;
@@ -153,8 +180,6 @@ titleSelect.addEventListener('change', (e) => {
         otherInput.style.display = 'none';
     }
 });
-
-colorSelect.style.display = 'none';
 
 designSelect.addEventListener('change', (e) => {
     const selectedValue = e.target.value;
@@ -166,15 +191,6 @@ designSelect.addEventListener('change', (e) => {
     }
 });
 
-let runningTotal = 0;
-
-const total = createElement('label', 'total-label', 'total-label', 'Total: $'),
-    totalSpan = createElement('span', 'total', 'total', '0');
-
-total.appendChild(totalSpan);
-activities.appendChild(total);
-nameField.focus();
-
 activities.addEventListener('change', (e) => {
     const checkedBoxes = [];
 
@@ -183,35 +199,33 @@ activities.addEventListener('change', (e) => {
 
     for (let i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
-            console.log(checkboxes[i].value);
             runningTotal += parseInt(checkboxes[i].value);
         }
-    }
 
-    for (let i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].classList.contains(checkbox.classList)) {
             checkedBoxes.push(checkboxes[i].name);
         }
     }
 
-    if (checkedBoxes.length > 1) {
-        const disable = (value) => {
-            return value !== checkbox.name;
-        };
-        let checkboxToDisable = checkedBoxes.filter(disable);
-        let conflictingTime = document.getElementById(checkboxToDisable);
-
-        if (conflictingTime.hasAttribute('disabled')) {
-            conflictingTime.removeAttribute('disabled');
-            conflictingTime.parentNode.style.color = "#000";
-        } else {
-            conflictingTime.setAttribute('disabled', 'disabled');
-            conflictingTime.parentNode.style.color = "#bbb";
-        }
-    }
-
-
+    validate.activities(checkedBoxes, checkbox);
     totalSpan.textContent = runningTotal.toString();
+});
 
-
+ccNum.addEventListener('blur', (e) => {
+    const ccNumValue = e.target.value;
+    if (ccNumValue.length !== 16 || isNaN(ccNumValue)) {
+        console.log('error');
+    }
+});
+ccZip.addEventListener('blur', (e) => {
+    const ccZipValue = e.target.value;
+    if (ccZipValue.length !== 5 || isNaN(ccZipValue)) {
+        console.log('error');
+    }
+});
+cvv.addEventListener('blur', (e) => {
+    const cvvValue = e.target.value;
+    if (cvvValue.length !== 3 || isNaN(cvvValue)) {
+        console.log('error');
+    }
 });
