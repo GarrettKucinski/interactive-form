@@ -137,6 +137,7 @@ const userData = document.getElementById('user_data'),
         });
     };
 
+
 sortColorOptions();
 displayPaymentInfo();
 validateForm();
@@ -165,11 +166,27 @@ designSelect.addEventListener('change', (e) => {
     }
 });
 
+let runningTotal = 0;
+
+const total = createElement('label', 'total-label', 'total-label', 'Total: $'),
+    totalSpan = createElement('span', 'total', 'total', '0');
+
+total.appendChild(totalSpan);
+activities.appendChild(total);
 nameField.focus();
 
 activities.addEventListener('change', (e) => {
-    let checkbox = e.target;
     const checkedBoxes = [];
+
+    let checkbox = e.target;
+    let runningTotal = 0;
+
+    for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            console.log(checkboxes[i].value);
+            runningTotal += parseInt(checkboxes[i].value);
+        }
+    }
 
     for (let i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].classList.contains(checkbox.classList)) {
@@ -186,8 +203,15 @@ activities.addEventListener('change', (e) => {
 
         if (conflictingTime.hasAttribute('disabled')) {
             conflictingTime.removeAttribute('disabled');
+            conflictingTime.parentNode.style.color = "#000";
         } else {
             conflictingTime.setAttribute('disabled', 'disabled');
+            conflictingTime.parentNode.style.color = "#bbb";
         }
     }
+
+
+    totalSpan.textContent = runningTotal.toString();
+
+
 });
