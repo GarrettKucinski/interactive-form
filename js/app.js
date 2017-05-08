@@ -3,19 +3,17 @@
 const userData = document.getElementById('user_data'),
     nameField = document.getElementById('name'),
     emailField = document.getElementById('mail'),
-    titleSelect = document.getElementById('title'),
     colorSelect = document.getElementById('colors-js-puns'),
     colorOptions = document.getElementById('color'),
-    designSelect = document.getElementById('design'),
     creditCard = document.getElementById('credit-card'),
     paypal = document.getElementById('paypal'),
     bitcoin = document.getElementById('bitcoin'),
     payment = document.getElementById('payment'),
     activities = document.getElementById('activities'),
     checkboxes = document.querySelectorAll('input[type=checkbox'),
-    ccNum = document.getElementById('cc-num'),
-    ccZip = document.getElementById('zip'),
-    cvv = document.getElementById('cvv'),
+    shirtSelection = document.getElementById('shirt'),
+    activityLegend = document.getElementById('activity-legend'),
+    otherInput = document.getElementById('other-title'),
 
     heartJsOptions = new Set(),
     jsPunsOptions = new Set(),
@@ -92,56 +90,152 @@ const userData = document.getElementById('user_data'),
     },
 
     validate = {
-        name: (input) => {
-            const nameError = document.getElementById('name-error');
-            if (!input && !nameError) {
-                const nameError = createElement('p', 'name-error', 'error', 'Field cannot be empty');
+        default: () => {
+            const nameFieldValue = nameField.value,
+                emailFieldValue = emailField.value,
+                emptyFieldError = document.getElementById('empty-field-error');
+
+            if (!nameFieldValue && !emptyFieldError) {
+                const nameError = createElement('p', 'empty-field-error', 'error', 'Field cannot be empty');
                 userData.insertBefore(nameError, nameField.nextElementSibling);
-            } else if (input && nameError) {
+            } else if (nameFieldValue && nameError) {
                 nameError.remove();
             }
         },
-        email: (input) => {
-            const invalidEntryError = document.getElementById('invalid-entry-error');
-            const emptyFieldError = document.getElementById('empty-field-error');
-            const isValidEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(emailField.value);
+        userData: {
+            email: () => {
+                const emailFieldValue = emailField.value,
+                    invalidEntryError = document.getElementById('invalid-entry-error'),
+                    emptyFieldError = document.getElementById('empty-field-error'),
+                    isValidEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(emailFieldValue);
 
-            if (input) {
-                if (!isValidEmail && !invalidEntryError) {
-                    const emailError = createElement('p', 'invalid-entry-error', 'error', 'You must enter a valid email address.');
-                    userData.insertBefore(emailError, emailField.nextElementSibling);
-                    if (emptyFieldError) {
-                        emptyFieldError.remove();
+                if (emailFieldValue) {
+                    if (!isValidEmail && !invalidEntryError) {
+                        const emailError = createElement('p', 'invalid-entry-error', 'error', 'You must enter a valid email address - ex. person@example.com.');
+                        userData.insertBefore(emailError, emailField.nextElementSibling);
+                        if (emptyFieldError) {
+                            emptyFieldError.remove();
+                        }
+                    } else if (isValidEmail && invalidEntryError) {
+                        invalidEntryError.remove();
                     }
-                } else if (isValidEmail && invalidEntryError) {
-                    invalidEntryError.remove();
-                }
-            } else if (!emptyFieldError) {
-                const emailError = createElement('p', 'empty-field-error', 'error', 'Field cannot be empty');
-                userData.insertBefore(emailError, emailField.nextElementSibling);
-                if (invalidEntryError) {
-                    invalidEntryError.remove();
-                }
+                } else if (!emptyFieldError) {
+                    const emailError = createElement('p', 'empty-field-error', 'error', 'Field cannot be empty');
+                    userData.insertBefore(emailError, emailField.nextElementSibling);
+                    if (invalidEntryError) {
+                        invalidEntryError.remove();
+                    }
 
+                }
             }
         },
-        activities: (checkedBoxes, checkbox) => {
-            if (checkedBoxes.length > 1) {
-                const disable = (value) => {
-                    return value !== checkbox.name;
-                };
-                let checkboxToDisable = checkedBoxes.filter(disable);
-                let conflictingTime = document.getElementById(checkboxToDisable);
+        activities: {
+            default: () => {
 
-                if (conflictingTime.hasAttribute('disabled')) {
-                    conflictingTime.removeAttribute('disabled');
-                    conflictingTime.parentNode.style.color = "#000";
+            },
+            checkboxes: (e, runningTotal) => {
+                let checkedBoxes = [];
+                let checkbox = e.target;
+
+                for (let i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].checked) {
+                        runningTotal += parseInt(checkboxes[i].value);
+                    }
+
+                    if (checkboxes[i].classList.contains(checkbox.classList)) {
+                        checkedBoxes.push(checkboxes[i].name);
+                    }
+                }
+
+                if (checkedBoxes.length > 1) {
+                    const disable = (value) => {
+                        return value !== checkbox.name;
+                    };
+                    let checkboxToDisable = checkedBoxes.filter(disable);
+                    let conflictingTime = document.getElementById(checkboxToDisable);
+
+                    if (conflictingTime.hasAttribute('disabled')) {
+                        conflictingTime.removeAttribute('disabled');
+                        conflictingTime.parentNode.style.color = "#000";
+                    } else {
+                        conflictingTime.setAttribute('disabled', 'disabled');
+                        conflictingTime.parentNode.style.color = "#bbb";
+                    }
+                }
+
+                totalSpan.textContent = runningTotal.toString();
+            }
+        },
+        creditCard: {
+            number: () => {
+                const ccNum = document.getElementById('cc-num'),
+                    ccNumValue = ccNum.value,
+                    ccNumError = document.getElementById('cc-num-error');
+
+                if (ccNumValue.length < 13 || ccNumValue.length > 16 || isNaN(ccNumValue)) {
+                    if (!ccNumError) {
+                        const ccNumError = createElement('div', 'cc-num-error', 'error cc-num-error', 'Sorry that is not a valid card number, please make sure you entered 13-16 digits and only characters 0-9');
+                        creditCard.appendChild(ccNumError);
+                        return true;
+                    }
                 } else {
-                    conflictingTime.setAttribute('disabled', 'disabled');
-                    conflictingTime.parentNode.style.color = "#bbb";
+                    if (ccNumError) {
+                        ccNumError.remove();
+                        return false;
+                    }
+                }
+            },
+            zipCode: () => {
+                const ccZip = document.getElementById('cc-zip'),
+                    ccZipValue = ccZip.value,
+                    zipError = document.getElementById('zip-error');
+
+                if (ccZipValue.length !== 5 || isNaN(ccZipValue)) {
+                    if (!zipError) {
+                        const zipError = createElement('div', 'zip-error', 'error zip-error', 'That is not a valid zip code, it must be exactly five digits and consists only of characters 0-9');
+                        creditCard.appendChild(zipError);
+                    }
+                } else {
+                    if (zipError) {
+                        zipError.remove();
+                    }
+                }
+            },
+            cvv: () => {
+                const ccCvv = document.getElementById('cc-cvv'),
+                    cvvValue = ccCvv.value,
+                    cvvError = document.getElementById('cvv-error');
+
+                if (cvvValue.length !== 3 || isNaN(cvvValue)) {
+                    if (!cvvError) {
+                        const cvvError = createElement('div', 'cvv-error', 'error cvv-error', 'You must enter the 3 digit code on that back of your card.');
+                        creditCard.appendChild(cvvError);
+                    }
+                } else {
+                    if (cvvError) {
+                        cvvError.remove();
+                    }
                 }
             }
+        }
+    },
 
+    toggleShirtCollection = (e) => {
+        let selectedValue = e.target.value;
+        if (selectedValue === 'default') {
+            colorSelect.style.display = 'none';
+        } else {
+            colorSelect.style.display = 'block';
+            displayColorOptions[selectedValue]();
+        }
+    },
+
+    toggleOtherInput = (e) => {
+        let selectedValue = e.target.value;
+        if (selectedValue === 'other') {
+            otherInput.style.display = 'block';
+        } else {
+            otherInput.style.display = 'none';
         }
     },
 
@@ -149,83 +243,48 @@ const userData = document.getElementById('user_data'),
 
     total = createElement('label', 'total-label', 'total-label', 'Total: $'),
     totalSpan = createElement('span', 'total', 'total', '0'),
-    otherInput = document.getElementById('other-title');
+    checkboxWarning = createElement('div', 'warning', 'warning', 'You must choose at least one activity.');
 
+// Set a variable to keep track of selected conferences dollar amount
 let runningTotal = 0;
 
-sortColorOptions();
-displayPaymentInfo();
-
+// Hide Inputs on load until user performs required action
 otherInput.style.display = 'none';
 colorSelect.style.display = 'none';
 
+// Append conference price total display to total div
+// Append total div to DOM
+// Append checkbox instructions to checkbox area
 total.appendChild(totalSpan);
 activities.appendChild(total);
+activityLegend.appendChild(checkboxWarning);
 
+// Focus input on namefield onload
 nameField.focus();
 
-nameField.addEventListener('blur', () => {
-    validate.name(nameField.value);
-});
+// Apply filter to color option select
+// Apply filter to payment options
+sortColorOptions();
+displayPaymentInfo();
+
+userData.addEventListener('change', (e) => {
+    toggleOtherInput(e);
+}, true);
 
 emailField.addEventListener('blur', () => {
-    validate.email(emailField.value);
+    validate.userData.email();
 });
 
-titleSelect.addEventListener('change', (e) => {
-    const selectedValue = e.target.value;
-    if (selectedValue === 'other') {
-        otherInput.style.display = 'block';
-    } else {
-        otherInput.style.display = 'none';
-    }
-});
-
-designSelect.addEventListener('change', (e) => {
-    const selectedValue = e.target.value;
-    if (selectedValue === 'default') {
-        colorSelect.style.display = 'none';
-    } else {
-        colorSelect.style.display = 'block';
-        displayColorOptions[selectedValue]();
-    }
-});
+shirtSelection.addEventListener('change', (e) => {
+    toggleShirtCollection(e);
+}, true);
 
 activities.addEventListener('change', (e) => {
-    const checkedBoxes = [];
-
-    let checkbox = e.target;
-    let runningTotal = 0;
-
-    for (let i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
-            runningTotal += parseInt(checkboxes[i].value);
-        }
-
-        if (checkboxes[i].classList.contains(checkbox.classList)) {
-            checkedBoxes.push(checkboxes[i].name);
-        }
-    }
-
-    validate.activities(checkedBoxes, checkbox);
-    totalSpan.textContent = runningTotal.toString();
+    validate.activities.checkboxes(e, runningTotal);
 });
 
-ccNum.addEventListener('blur', (e) => {
-    const ccNumValue = e.target.value;
-    if (ccNumValue.length !== 16 || isNaN(ccNumValue)) {
-        console.log('error');
-    }
-});
-ccZip.addEventListener('blur', (e) => {
-    const ccZipValue = e.target.value;
-    if (ccZipValue.length !== 5 || isNaN(ccZipValue)) {
-        console.log('error');
-    }
-});
-cvv.addEventListener('blur', (e) => {
-    const cvvValue = e.target.value;
-    if (cvvValue.length !== 3 || isNaN(cvvValue)) {
-        console.log('error');
-    }
-});
+creditCard.addEventListener('blur', () => {
+    validate.creditCard.number();
+    validate.creditCard.zipCode();
+    validate.creditCard.cvv();
+}, true);

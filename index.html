@@ -40,44 +40,44 @@
                 <input type="text" id='other-title' placeholder="Your Job Title">
             </fieldset>
 
-            <fieldset class="shirt">
+            <fieldset id="shirt" class="shirt">
                 <legend>T-Shirt Info</legend>
 
                 <div>
                     <label for="size">Size:</label>
                     <select id="size" name="user_size">
-            <option value="small">S</option>
-            <option value="medium" selected>M</option>
-            <option value="large">L</option>
-            <option value="extra large">XL</option>
-          </select>
+                        <option value="small">S</option>
+                        <option value="medium" selected>M</option>
+                        <option value="large">L</option>
+                        <option value="extra large">XL</option>
+                    </select>
                 </div>
 
                 <div>
                     <label for="design">Design:</label>
                     <select id="design" name="user_design">
-            <option value="default">Select Theme</option>
-            <option value="jsPuns">Theme - JS Puns</option>
-            <option value="heartJs">Theme - I &#9829; JS</option>
-          </select>
+                        <option value="default">Select Theme</option>
+                        <option value="jsPuns">Theme - JS Puns</option>
+                        <option value="heartJs">Theme - I &#9829; JS</option>
+                    </select>
                 </div>
 
                 <div id="colors-js-puns" class="">
                     <label for="color">Color:</label>
                     <select id="color">
-            <option>Select a Color</option>
-            <option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>
-            <option value="darkslategrey">Dark Slate Grey (JS Puns shirt only)</option> 
-            <option value="gold">Gold (JS Puns shirt only)</option> 
-            <option value="tomato">Tomato (I &#9829; JS shirt only)</option>
-            <option value="steelblue">Steel Blue (I &#9829; JS shirt only)</option> 
-            <option value="dimgrey">Dim Grey (I &#9829; JS shirt only)</option> 
-          </select>
+                        <option>Select a Color</option>
+                        <option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>
+                        <option value="darkslategrey">Dark Slate Grey (JS Puns shirt only)</option> 
+                        <option value="gold">Gold (JS Puns shirt only)</option> 
+                        <option value="tomato">Tomato (I &#9829; JS shirt only)</option>
+                        <option value="steelblue">Steel Blue (I &#9829; JS shirt only)</option> 
+                        <option value="dimgrey">Dim Grey (I &#9829; JS shirt only)</option> 
+                    </select>
                 </div>
             </fieldset>
 
             <fieldset id="activities" class="activities">
-                <legend>Register for Activities</legend>
+                <legend id="activity-legend">Register for Activities</legend>
                 <label><input type="checkbox" class="all" value="200" name="all"> Main Conference — $200</label>
                 <label><input class="tues-morning" id="js-frameworks" value="100" type="checkbox" name="js-frameworks"> JavaScript Frameworks Workshop — Tuesday 9am-12pm, $100</label>
                 <label><input type="checkbox" class="tues-afternoon" value="100" id="js-libs" name="js-libs"> JavaScript Libraries Workshop — Tuesday 1pm-4pm, $100</label>
@@ -106,12 +106,12 @@
 
                     <div class="col-3 col">
                         <label for="zip">Zip Code:</label>
-                        <input id="zip" name="user_zip" type="text">
+                        <input id="cc-zip" name="user_zip" type="text">
                     </div>
 
                     <div class="col-3 col">
                         <label for="cvv">CVV:</label>
-                        <input id="cvv" name="user_cvv" type="text">
+                        <input id="cc-cvv" name="user_cvv" type="text">
                     </div>
 
                     <label for="exp-month">Expiration Date:</label>
