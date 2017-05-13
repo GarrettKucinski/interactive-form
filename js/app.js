@@ -88,19 +88,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     const nameFieldValue = nameField.value,
                         emptyFieldError = document.getElementById('empty-field-error');
 
-                        if(!nameFieldValue) {
-                            if (!emptyFieldError) {
-                                console.log('No name value', nameFieldValue);
-                                const nameError = createElement('p', 'empty-field-error', 'error', 'Field cannot be empty');
-                                userData.insertBefore(nameError, nameField.nextElementSibling);
-                            } 
-                            return false;
-                        } else {
-                            if(emptyFieldError) {
-                                emptyFieldError.remove();
-                            } 
-                            return true;
-                        }
+                    if(!nameFieldValue) {
+                        if (!emptyFieldError) {
+                            const nameError = createElement('p', 'empty-field-error', 'error', 'Field cannot be empty');
+                            userData.insertBefore(nameError, nameField.nextElementSibling);
+                        } 
+                        return false;
+                    } else {
+                        if(emptyFieldError) {
+                            emptyFieldError.remove();
+                        } 
+                        return true;
+                    }
                 },
                 email () {
                     const emailFieldValue = emailField.value,
@@ -321,9 +320,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Validate all fields upon form submission
     eventForm.addEventListener('submit', e => {
         let isValid = validateForm();
-        validate.activities.isChecked();
+
         if(!isValid) {
-            console.log("Invalid Form");
             e.preventDefault();
         }
     });
