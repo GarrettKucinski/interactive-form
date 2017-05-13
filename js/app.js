@@ -269,13 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 validate.creditCard.number()
                 validate.creditCard.zipCode()
                 validate.creditCard.cvv()
-
-
-                console.log('name', validate.userData.name());
-                console.log('email', validate.userData.email());
-                console.log('number', validate.creditCard.number());
-                console.log('zipcode', validate.creditCard.zipCode());
-                console.log('creditcard', validate.creditCard.cvv());
+                
                 return false;
             }
         },
@@ -313,10 +307,18 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleOtherInput();
     togglePaymentOption();
 
+    // Add event listener to output checkbox logic
     activities.addEventListener('change', e => {
         validate.activities.checkboxes(e, runningTotal);
     });
 
+    creditCard.addEventListener('input', _ => {
+        validate.creditCard.number();
+        validate.creditCard.zipCode();
+        validate.creditCard.cvv();
+    });
+
+    // Validate all fields upon form submission
     eventForm.addEventListener('submit', e => {
         let isValid = validateForm();
         validate.activities.isChecked();
