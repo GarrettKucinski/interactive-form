@@ -124,10 +124,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 isChecked () {
                     for (let checkbox of checkboxes) {
                         if (checkbox.checked) {
-                        console.log(checkbox);
                             return true;
                         }
                     }
+                    const checkboxWarning = createElement('div', 'warning', 'error warning', 'You must choose at least one activity.');
+                    activityLegend.appendChild(checkboxWarning);
                     return false;
                 },
                 checkboxes (e, runningTotal) {
@@ -263,11 +264,12 @@ document.addEventListener('DOMContentLoaded', () => {
             ) {
                 return true;
             } else {
-                validate.userData.name()
-                validate.userData.email()
-                validate.creditCard.number()
-                validate.creditCard.zipCode()
-                validate.creditCard.cvv()
+                validate.userData.name();
+                validate.userData.email();
+                validate.activities.isChecked();
+                validate.creditCard.number();
+                validate.creditCard.zipCode();
+                validate.creditCard.cvv();
                 
                 return false;
             }
@@ -275,8 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Create elements for activity total and checkbox instructions
         total = createElement('label', 'total-label', 'total-label', 'Total: $'),
-        totalSpan = createElement('span', 'total', 'total', '0'),
-        checkboxWarning = createElement('div', 'warning', 'warning', 'You must choose at least one activity.');
+        totalSpan = createElement('span', 'total', 'total', '0');
 
     // Set a variable to keep track of selected conferences dollar amount
     let runningTotal = 0;
@@ -292,7 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Append checkbox instructions to checkbox area
     total.appendChild(totalSpan);
     activities.appendChild(total);
-    activityLegend.appendChild(checkboxWarning);
 
     // Focus input on namefield onload
     nameField.focus();
