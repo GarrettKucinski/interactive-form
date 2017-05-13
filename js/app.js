@@ -83,55 +83,49 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         validate = {
-            default () {
-                const nameFieldValue = nameField.value,
-                    emailFieldValue = emailField.value,
-                    emptyFieldError = document.getElementById('empty-field-error');
-
-                if (!nameFieldValue && !emptyFieldError) {
-                    const nameError = createElement('p', 'empty-field-error', 'error', 'Field cannot be empty');
-                    userData.insertBefore(nameError, nameField.nextElementSibling);
-                } else if (nameFieldValue && emptyFieldError) {
-                    emptyFieldError.remove();
-                }
-            },
             userData: {
+                name () {
+                    const nameFieldValue = nameField.value,
+                        emptyFieldError = document.getElementById('empty-field-error');
+
+                        if(!nameFieldValue) {
+                            if (!emptyFieldError) {
+                                console.log('No name value', nameFieldValue);
+                                const nameError = createElement('p', 'empty-field-error', 'error', 'Field cannot be empty');
+                                userData.insertBefore(nameError, nameField.nextElementSibling);
+                            } 
+                            return false;
+                        } else {
+                            if(emptyFieldError) {
+                                emptyFieldError.remove();
+                            } 
+                            return true;
+                        }
+                },
                 email () {
                     const emailFieldValue = emailField.value,
                         invalidEntryError = document.getElementById('invalid-entry-error'),
-                        emptyFieldError = document.getElementById('empty-field-error'),
                         isValidEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(emailFieldValue);
 
-                    if (emailFieldValue) {
-                        if (!isValidEmail && !invalidEntryError) {
-                            const emailError = createElement('p', 'invalid-entry-error', 'error', 'You must enter a valid email address - ex. person@example.com.');
-                            userData.insertBefore(emailError, emailField.nextElementSibling);
-                            if (emptyFieldError) {
-                                emptyFieldError.remove();
-                            }
-                        } else if (isValidEmail && invalidEntryError) {
-                            invalidEntryError.remove();
-                        }
-                    } else if (!emptyFieldError) {
-                        const emailError = createElement('p', 'empty-field-error', 'error', 'Field cannot be empty');
+                    if (!isValidEmail && !invalidEntryError) {
+                        const emailError = createElement('p', 'invalid-entry-error', 'error', 'You must enter a valid email address - ex. person@example.com.');
                         userData.insertBefore(emailError, emailField.nextElementSibling);
-                        if (invalidEntryError) {
-                            invalidEntryError.remove();
-                        }
-
+                        return false;
+                    } else if (isValidEmail && invalidEntryError) {
+                        invalidEntryError.remove();
+                        return true;
                     }
                 }
             },
             activities: {
-                default () {
-                    let numChecked = 0;
+                isChecked () {
                     for (let checkbox of checkboxes) {
                         if (checkbox.checked) {
-                            numChecked++;
+                        console.log(checkbox);
+                            return true;
                         }
                     }
-                    console.log(numChecked)
-                    return numChecked;
+                    return false;
                 },
                 checkboxes (e, runningTotal) {
                     let checkedBoxes = [];
@@ -176,14 +170,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (!ccNumError) {
                             const ccNumError = createElement('div', 'cc-num-error', 'error cc-num-error', 'Sorry that is not a valid card number, please make sure you entered 13-16 digits and only characters 0-9');
                             creditCard.appendChild(ccNumError);
-                            console.log(ccNumValue);
-                            return true;
+                            return false;
                         }
                     } else {
                         if (ccNumError) {
                             ccNumError.remove();
-                            return false;
                         }
+                        return true;
                     }
                 },
                 zipCode () {
@@ -196,10 +189,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             const zipError = createElement('div', 'zip-error', 'error zip-error', 'That is not a valid zip code, it must be exactly five digits and consists only of characters 0-9');
                             creditCard.appendChild(zipError);
                         }
+                        return false;
                     } else {
                         if (zipError) {
                             zipError.remove();
                         }
+                        return true;
                     }
                 },
                 cvv () {
@@ -212,10 +207,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             const cvvError = createElement('div', 'cvv-error', 'error cvv-error', 'You must enter the 3 digit code on that back of your card.');
                             creditCard.appendChild(cvvError);
                         }
+                        return false;
                     } else {
                         if (cvvError) {
                             cvvError.remove()
                         }
+                        return true;
                     }
                 }
             }
@@ -240,12 +237,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
 
-        validateForm = e => { 
-            console.log('valid form', checked); 
-            if(checked < 1) {
-                e.preventDefault();
-                return false;
+        validateForm = _ => {
+            if (
+            validate.userData.name()
+            && validate.userData.email()
+            && validate.activities.isChecked()
+            && validate.creditCard.number()
+            && validate.creditCard.zipCode()
+            && validate.creditCard.cvv()
+            ) {
+                return true;
+            } else {
+                validate.userData.name()
+                validate.userData.email()
+                validate.creditCard.number()
+                validate.creditCard.zipCode()
+                validate.creditCard.cvv()
             }
+            return false;
         },
 
         // Create elements for activity total and checkbox instructions
@@ -255,9 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set a variable to keep track of selected conferences dollar amount
     let runningTotal = 0;
-
-    // Set inital number of checked activites
-    let checked = validate.activities.default();
 
     // Hide Inputs on load until user performs required action
     otherInput.style.display = 'none';
@@ -292,22 +298,16 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleShirtCollection(e);
     }, true);
 
-    emailField.addEventListener('blur', _ => {
-        validate.userData.email();
-    });
-
     activities.addEventListener('change', e => {
-        checked = validate.activities.default();
         validate.activities.checkboxes(e, runningTotal);
     });
 
-    creditCard.addEventListener('input', _ => {
-        validate.creditCard.number();
-        validate.creditCard.zipCode();
-        validate.creditCard.cvv();
-    }, true);
-
     eventForm.addEventListener('submit', e => {
-        validateForm(e);
+        let isValid = validateForm();
+        validate.activities.isChecked();
+        if(!isValid) {
+            console.log("Invalid Form");
+            e.preventDefault();
+        }
     });
 });
