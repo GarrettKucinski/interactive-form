@@ -107,12 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         invalidEntryError = document.getElementById('invalid-entry-error'),
                         isValidEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(emailFieldValue);
 
-                    if (!isValidEmail && !invalidEntryError) {
-                        const emailError = createElement('p', 'invalid-entry-error', 'error', 'You must enter a valid email address - ex. person@example.com.');
-                        userData.insertBefore(emailError, emailField.nextElementSibling);
+                    if (!isValidEmail) {
+                        if (!invalidEntryError) {
+                            const emailError = createElement('p', 'invalid-entry-error', 'error', 'You must enter a valid email address - ex. person@example.com.');
+                            userData.insertBefore(emailError, emailField.nextElementSibling);
+                        }
                         return false;
-                    } else if (isValidEmail && invalidEntryError) {
-                        invalidEntryError.remove();
+                    } else {
+                        if (invalidEntryError) {
+                            invalidEntryError.remove();
+                        }
                         return true;
                     }
                 }
@@ -265,8 +269,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 validate.creditCard.number()
                 validate.creditCard.zipCode()
                 validate.creditCard.cvv()
+
+
+                console.log('name', validate.userData.name());
+                console.log('email', validate.userData.email());
+                console.log('number', validate.creditCard.number());
+                console.log('zipcode', validate.creditCard.zipCode());
+                console.log('creditcard', validate.creditCard.cvv());
+                return false;
             }
-            return false;
         },
 
         // Create elements for activity total and checkbox instructions
