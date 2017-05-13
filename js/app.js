@@ -219,22 +219,34 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         toggleShirtCollection = e => {
-            let selectedValue = e.target.value;
-            if (selectedValue === 'default') {
-                colorSelect.style.display = 'none';
-            } else {
-                colorSelect.style.display = 'block';
-                displayColorOptions[selectedValue]();
-            }
+            shirtSelection.addEventListener('change', e => {
+                let selectedValue = e.target.value;
+                if (selectedValue === 'default') {
+                    colorSelect.style.display = 'none';
+                } else {
+                    colorSelect.style.display = 'block';
+                    displayColorOptions[selectedValue]();
+                }
+            }, true);
         },
 
         toggleOtherInput = e => {
-            let selectedValue = e.target.value;
-            if (selectedValue === 'other') {
-                otherInput.style.display = 'block';
-            } else {
-                otherInput.style.display = 'none';
-            }
+            userData.addEventListener('change', e => {
+                let selectedValue = e.target.value;
+
+                if (selectedValue === 'other') {
+                    otherInput.style.display = 'block';
+                } else {
+                    otherInput.style.display = 'none';
+                }
+            }, true);
+        },
+
+        togglePaymentOption = _ => {
+            payment.addEventListener('change', e => {
+                const selectedValue = e.target.value;
+                paymentOptions[selectedValue]();
+            });
         },
 
         validateForm = _ => {
@@ -284,19 +296,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Apply filter to color option select
     // Apply filter to payment options
     sortColorOptions();
-
-    payment.addEventListener('change', e => {
-        const selectedValue = e.target.value;
-        paymentOptions[selectedValue]();
-    });
-
-    userData.addEventListener('change', e => {
-        toggleOtherInput(e);
-    }, true);
-
-    shirtSelection.addEventListener('change', e => {
-        toggleShirtCollection(e);
-    }, true);
+    toggleShirtCollection();
+    toggleOtherInput();
+    togglePaymentOption();
 
     activities.addEventListener('change', e => {
         validate.activities.checkboxes(e, runningTotal);
@@ -310,4 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
         }
     });
+
 });
+
