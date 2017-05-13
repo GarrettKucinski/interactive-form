@@ -295,6 +295,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Apply filter to color option select
     // Apply filter to payment options
+    // Apply filter to toggle "Other" job title input
+    // Apply filter to display payment option corresponding with selection
     sortColorOptions();
     toggleShirtCollection();
     toggleOtherInput();
