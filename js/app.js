@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bitcoin = document.getElementById('bitcoin'),
         payment = document.getElementById('payment'),
         activities = document.getElementById('activities'),
-        checkboxes = document.querySelectorAll('input[type=checkbox'),
+        checkboxes = document.querySelectorAll('input[type="checkbox"]'),
         shirtSelection = document.getElementById('shirt'),
         activityLegend = document.getElementById('activity-legend'),
         otherInput = document.getElementById('other-title'),
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     color.style.display = 'block';
                 }
             },
-            jsPuns () {
+            jsPuns() {
                 for (let color of colorOptions) {
                     color.style.display = 'none';
                     if (jsPunsOptions.has(color)) {
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             },
-            heartJs () {
+            heartJs() {
                 for (let color of colorOptions) {
                     color.style.display = 'none';
                     if (heartJsOptions.has(color)) {
@@ -65,17 +65,17 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         paymentOptions = {
-            credit_card () {
+            credit_card() {
                 creditCard.style.display = 'block';
                 bitcoin.style.display = 'none';
                 paypal.style.display = 'none';
             },
-            paypal () {
+            paypal() {
                 creditCard.style.display = 'none';
                 bitcoin.style.display = 'none';
                 paypal.style.display = 'block';
             },
-            bitcoin () {
+            bitcoin() {
                 creditCard.style.display = 'none';
                 bitcoin.style.display = 'block';
                 paypal.style.display = 'none';
@@ -84,24 +84,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         validate = {
             userData: {
-                name () {
+                name() {
                     const nameFieldValue = nameField.value,
                         emptyFieldError = document.getElementById('empty-field-error');
 
-                    if(!nameFieldValue) {
+                    if (!nameFieldValue) {
                         if (!emptyFieldError) {
                             const nameError = createElement('p', 'empty-field-error', 'error', 'Field cannot be empty');
                             userData.insertBefore(nameError, nameField.nextElementSibling);
-                        } 
+                        }
                         return false;
                     } else {
-                        if(emptyFieldError) {
+                        if (emptyFieldError) {
                             emptyFieldError.remove();
-                        } 
+                        }
                         return true;
                     }
                 },
-                email () {
+                email() {
                     const emailFieldValue = emailField.value,
                         invalidEntryError = document.getElementById('invalid-entry-error'),
                         isValidEmail = /(.+)@(.+){2,}\.(.+){2,}/.test(emailFieldValue);
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             activities: {
-                isChecked () {
+                isChecked() {
                     for (let checkbox of checkboxes) {
                         if (checkbox.checked) {
                             return true;
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     activityLegend.appendChild(checkboxWarning);
                     return false;
                 },
-                checkboxes (e, runningTotal) {
+                checkboxes(e, runningTotal) {
                     let checkedBoxes = [];
                     let checkbox = e.target;
 
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             },
             creditCard: {
-                number () {
+                number() {
                     const ccNum = document.getElementById('cc-num'),
                         ccNumValue = ccNum.value,
                         ccNumError = document.getElementById('cc-num-error');
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         return true;
                     }
                 },
-                zipCode () {
+                zipCode() {
                     const ccZip = document.getElementById('cc-zip'),
                         ccZipValue = ccZip.value,
                         zipError = document.getElementById('zip-error');
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         return true;
                     }
                 },
-                cvv () {
+                cvv() {
                     const ccCvv = document.getElementById('cc-cvv'),
                         cvvValue = ccCvv.value,
                         cvvError = document.getElementById('cvv-error');
@@ -255,12 +255,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         validateForm = _ => {
             if (
-            validate.userData.name()
-            && validate.userData.email()
-            && validate.activities.isChecked()
-            && validate.creditCard.number()
-            && validate.creditCard.zipCode()
-            && validate.creditCard.cvv()
+                validate.userData.name() &&
+                validate.userData.email() &&
+                validate.activities.isChecked() &&
+                validate.creditCard.number() &&
+                validate.creditCard.zipCode() &&
+                validate.creditCard.cvv()
             ) {
                 return true;
             } else {
@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 validate.creditCard.number();
                 validate.creditCard.zipCode();
                 validate.creditCard.cvv();
-                
+
                 return false;
             }
         },
@@ -321,10 +321,9 @@ document.addEventListener('DOMContentLoaded', () => {
     eventForm.addEventListener('submit', e => {
         let isValid = validateForm();
 
-        if(!isValid) {
+        if (!isValid) {
             e.preventDefault();
         }
     });
 
 });
-
